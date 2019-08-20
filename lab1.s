@@ -68,16 +68,13 @@ swap_bits:
 move $t0, $a0 
 ############################## Part 1: your code begins here ###
 
-# David plan to do it.
-#
-# 1. get all even bits of x 
-#  how to? x AND 0xAAAAAAAA
-# 2. get all odd bits
-# how to ? x AND 0x55555555
-# even bits --> right shift
-# odd bits --> left shift
-# combine even and odd....(maybe by ori?)
-#
+li	$t1, 0xAAAAAAAA
+li	$t2, 0x55555555
+and	$t1, $t1, $t0
+srl	$t1, $t1, 1
+and	$t2, $t2, $t0
+sll	$t2, $t2, 1
+or	$t0, $t1, $t2
 
 ############################## Part 1: your code ends here ###
 move $v0, $t0
@@ -101,6 +98,8 @@ move $t1, $a1
 move $t2, $a2
 ############################### Part 2: your code begins here ##
 
+#
+#
 #
 
 
