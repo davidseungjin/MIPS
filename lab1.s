@@ -98,11 +98,43 @@ move $t1, $a1
 move $t2, $a2
 ############################### Part 2: your code begins here ##
 
-#
-#
-#
+	blt		$t0, $t1, comp1
+	blt		$t2, $t0, comp4
+	move	$t3, $t1						
+	move	$t4, $t2						# $t1 / $t0 / $t2
+	j			cal
 
+comp1:
+	blt		$t1, $t2, comp2
+	blt		$t2, $t0, comp3
+	move	$t3, $t0						# case 2: min/ mid/ max is
+	move	$t4, $t1						# $t0 / $t2 / $t1
+	j			cal
 
+comp2:
+	move	$t3, $t0						# case 1: min/ mid/ max is
+	move	$t4, $t2						# $t0 / $t1 / $t2
+	j			cal
+
+comp3:
+	move	$t3, $t2						# case 3
+	move	$t4, $t1						# $t2 / $t0 / $t1
+	j			cal
+
+comp4:
+	blt		$t2, $t1, comp5
+	move	$t3, $t1						# case 5
+	move	$t4, $t0						# $t1 / $t2 / $t0
+	j			cal
+
+comp5:
+	move	$t3, $t2						# case 4
+	move	$t4, $t0						# $t2 / $t1 / $t0
+	j			cal
+
+cal:
+	add		$t0, $t3, $t4				# (min + max)
+	sll		$t0, $t0, 1					# multiply by 2
 
 ############################### Part 2: your code ends here  ##
 move $v0, $t0
