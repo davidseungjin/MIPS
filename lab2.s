@@ -13,8 +13,8 @@
 ###############################################################
 #                           Data Section
 .data
-student_name: .asciiz "Your Name"
-student_id: .asciiz "Your Student ID"
+student_name: .asciiz "SEUNGJIN LEE"
+student_id: .asciiz "49607024"
 
 identity_m: .word 1, 0, 0, 0, 1, 0
 scale_m:    .word 2, 0, 0, 0, 1, 0
@@ -56,11 +56,11 @@ t2_str_2: .asciiz "Testing part 2 (rotation): \n"
 t2_str_3: .asciiz "Testing part 2 (shear): \n" 
 
 # Files
-fin: .asciiz "/PATH/TO/lenna.pgm"
-fout_thresh: .asciiz "/PATH/TO/lenna_thresh.pgm"
-fout_rotate: .asciiz "/PATH/TO/lenna_rotation.pgm"
-fout_shear: .asciiz "/PATH/TO/lenna_shear.pgm"
-fout_scale: .asciiz "/PATH/TO/lenna_scale.pgm"
+fin: .asciiz "./lenna.pgm"
+fout_thresh: .asciiz "./lenna_thresh.pgm"
+fout_rotate: .asciiz "./lenna_rotation.pgm"
+fout_shear: .asciiz "./lenna_shear.pgm"
+fout_scale: .asciiz "./lenna_scale.pgm"
 
 # Input/output buffers
 .align 2
@@ -191,6 +191,34 @@ jr $ra
 ###############################################################
 threshold:
 ############################## Part 1: your code begins here ###
+
+andi	$t5, $0, 0x00			# initialize $t5 as 0 for looping.
+andi	$t6, $0, 0x00			# initialize $t6 as 0
+ori		$t7, $0, 0xFF			# initialize $t7 as 255
+multu	$a2, $a2					# hilo <-- $a2 * $a2, unsigned operands
+mflo	$t3								# copy value stored in lo register to $t3
+
+startofloop:
+bgt		$t5, $t3, endofloop
+lbu		$t4, 0($a0)				# $t4 is holding value of byte copied from the address of $a0
+addi	$a0, $a0, 1				# a0 address adjustment (increament by 1 until)
+blt		$t4, $a3, lthan
+bge		$t4, $a3, gte
+
+lthan:
+sb		$t6, 0($a1)				# store zero bytes to $t0 when $a0 bytes is less than threshold.
+addi	$a1, $a1, 1				# a1 address adjustment
+addi	$t5, $t5, 1				# $t1 is count for looping by comparing to dimension(a2)
+j 		startofloop
+
+gte:
+sb		$t7, 0($a1)				# store 255 bytes to $t0 when $a0 is greater or equal to threshold
+addi	$a1, $a1, 1				# a1 address adjustment
+addi	$t5, $t5, 1				# $t1 is count for looping by comparing to dimension(a2)
+j			startofloop
+
+endofloop:
+
 
 ############################## Part 1: your code ends here ###
 jr $ra
