@@ -233,6 +233,72 @@ jr $ra
 transform:
 ############################### Part 2: your code begins here ##
 
+
+andi	$t0, $0, 0x00			# initialize $t0 as 0 for looping.
+andi	$t1, $0, 0x00			# initialize $t1 as 0 for nested looping.
+
+parentloop:
+bgt		$t0, $a3, exitloop
+blt		$t1, $a3, nestedloop
+andi	$t1, $0, 0x00			# $t1 initialization
+addi	$t0, $t0, 1				# $t0 increment by 1
+j			parentloop
+
+nestedloop:
+lw		$t2, 0($a2)				# M00
+mult	$t2, $t0					# M00 x x
+mflo	$t3								# value move to $t3
+lw		$t2, 4($a2)				# M01
+mult	$t2, $t1					# M01 * y
+mflo	$t4								# value move to $t4
+lw		$t2, 8($a2)				# M02
+add		$t5, $t3, $t4			# M00 x X + M01 * y
+add		$t5, $t5, $t2			# M00 x X + M01 * y + M02 ===> $t5
+lw		$t2, 12($a2)			# M10
+mult	$t2, $t0					# M10 x X
+mflo	$t3								# value move to $t3
+lw		$t2, 16($a2)			# M11
+mult	$t2, $t1					# M11 x y
+mflo	$t4								# value move to $t4
+lw		$t2, 20($a2)			# M12
+add		$t6, $t3, $t4			# M10 x X + M11 * y
+add		$t6, $t6, $t2			# M10 x X + M11 * y + M12 ---> $t6
+addi	$t1, $t1, 1				# $t1 increment by 1
+j			comparison1
+
+comparison1:
+bgt		$t5, $a3, makezero1
+bgt		$t6, $a3, makezero2
+bltz	$t5, makezero1
+bltz	$t6, makezero2
+j			conversion
+
+conversion:
+mult	$t0, $a3						# to find the address of $a0? 
+mflo	$t3
+sll		$t4, $t1, 2					# multiply by 4 (to apply 4 bytes)
+add		$t7, $t3, $t4				# offset value of address of $a0
+multu	$t5, $a3						# to fine the address of $a1
+mflo	$t3
+sll		$t4, $t6, 2					# multiply by 4 (to apply 4 bytes)
+mflo	$t4
+add		$t8, $t3, $t4				# the affset value of address of $a1
+add		$a0, $a0, $t7
+lbu		$t9, 0($a0)
+add		$a1, $a1, $t8
+sb		$t9, 0($a1)
+j			parentloop
+
+makezero1:
+and		$t5, $t5, $0
+j			comparison1
+
+makezero2:
+and		$t6, $t6, $0
+j			comparison1
+
+exitloop:
+
 ############################### Part 2: your code ends here  ##
 jr $ra
 ###############################################################
