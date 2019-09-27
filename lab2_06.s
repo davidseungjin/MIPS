@@ -232,8 +232,8 @@ jr $ra
 ###############################################################
 transform:
 ############################### Part 2: your code begins here ##
-andi	$t0, $0, 0				# initialize $t0 as 0 for looping. y
-andi	$t1, $0, 0				# initialize $t1 as 0 for nested looping. x
+ori		$t0, $0, 0				# initialize $t0 as 0 for looping. y
+ori		$t1, $0, 0				# initialize $t1 as 0 for nested looping. x
 j			parentloop
 
 parentloop:
